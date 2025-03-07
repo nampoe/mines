@@ -13,16 +13,6 @@ string hidden = "[]";
 void createTable(int bombAmt, string (&trueBoard)[5][5])
 {
     
-    string hiddenBoard[5][5] =
-    { 
-        {hidden, hidden, hidden, hidden, hidden},
-        {hidden, hidden, hidden, hidden, hidden},
-        {hidden, hidden, hidden, hidden, hidden},
-        {hidden, hidden, hidden, hidden, hidden},
-        {hidden, hidden, hidden, hidden, hidden}
-    };
-
-
     for(int i = 0; i < bombAmt; i++) // asettaa määrätyn määrän pommeja randomeille paikoille
     {
         int xAxisBomb = rand() % 5;
@@ -55,18 +45,30 @@ void createTable(int bombAmt, string (&trueBoard)[5][5])
     }
 }
 
+void clearSpace(int clearX,int clearY, string (&trueBoard)[5][5], string (&hiddenBoard)[5][5])
+{
+    if (trueBoard[clearX][clearY] == bombLocation)
+        hiddenBoard[clearX][clearY] = bombLocation;
+
+    else
+        hiddenBoard[clearX][clearY] = clearLocation;
+}
+
+
+
 int main()
 {
 
     srand(time(0));
     cout << "kerro pommien määrä mitä asetan, enintään 24" << endl;
+
     int a;
     cin >> a;
     if (a >= 25){
         return 1;
     }
 
-    string trueBoard[5][5] =
+    string trueBoard[5][5] = // luo oikean tablen johon ne pommit asetetaan createTable funktios
     { 
         {moi, moi, moi, moi, moi},
         {moi, moi, moi, moi, moi},
@@ -74,25 +76,59 @@ int main()
         {moi, moi, moi, moi, moi},
         {moi, moi, moi, moi, moi}
     };
+
+    string hiddenBoard[5][5] = // luo pöydän joka näytetään pelaajalle
+    { 
+        {hidden, hidden, hidden, hidden, hidden},
+        {hidden, hidden, hidden, hidden, hidden},
+        {hidden, hidden, hidden, hidden, hidden},
+        {hidden, hidden, hidden, hidden, hidden},
+        {hidden, hidden, hidden, hidden, hidden}
+    };
     createTable(a, trueBoard); // luo "a" määrän pommeja ja käyttää sitä lukua tuol funktios
 
+    while(true)
+    {
+        cout<<"pelilaudalla on " << a << " miinaa\n";
 
-    
-	int i,j;
-	
-	cout<<"piirrän trueboardin bug testei varten rn:\n";
-	for(i=0;i<5;i++)
-	{
-		for(j=0;j<5;j++)
-		{
-			cout<<" "<<trueBoard[i][j];
-		}
-		cout<<endl;
-	}
+        int i,j;
+        for(i=0;i<5;i++)        // piirtää hiddenboardin pelaajalle näkyväksi
+        {
+            for(j=0;j<5;j++)
+            {
+                cout<<hiddenBoard[i][j]<<"\t";
+            }
+            cout<<"\n"<<endl;
+        }
+        
+        cout<< "Kerro laatan X kordinaatti jonka haluat avata, 1 - 5" << endl;
+        int clearx,cleary;
+        cin>>cleary;
+        cout<< "Kerro laatan Y kordinaatti jonka haluat avata, 1 - 5" << endl;
+        cin>>clearx;
+        if(clearx >= 6 || cleary >= 6 || clearx <= 0 || cleary <= 0)
+            return 2;
+        clearx--;
+        cleary--;
+        clearSpace(clearx,cleary,trueBoard,hiddenBoard);
 
+        if(trueBoard[clearx][cleary] == bombLocation)
+        {
+            cout<< "räjähdit :(" << endl;
 
+            for(i=0;i<5;i++)        // piirtää trueboardin pelaajalle näkyväksi häviön jälkeen
+            {
+                for(j=0;j<5;j++)
+                {
+                    cout<<trueBoard[i][j]<<"\t";
+                }
+                cout<<"\n"<<endl;
+            }
+            break;
+        }
+    }
 
-sleep(5);
-return 0;
+    sleep(5);
+    return 0;
 
 }
