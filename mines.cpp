@@ -54,7 +54,18 @@ void clearSpace(int clearX,int clearY, string (&trueBoard)[5][5], string (&hidde
         hiddenBoard[clearX][clearY] = clearLocation;
 }
 
+double getMulti(double bombAmt, double availableTileAmt)
+{
+    double multipros;
+    double multi;
 
+
+    multipros = (availableTileAmt - bombAmt) / 25;
+    multipros = (multipros * 100);
+    multi = 100 / (multipros);
+
+    return multi;
+}
 
 int main()
 {
@@ -62,9 +73,13 @@ int main()
     srand(time(0));
     cout << "kerro pommien määrä mitä asetan, enintään 24" << endl;
 
-    int a;
-    cin >> a;
-    if (a >= 25){
+    int a,b;
+    cin >> a; // pommien määrä
+    b = a; // muunneltava pommien määrä
+    int c = 25;
+    
+
+    if (a >= 25){ 
         return 1;
     }
 
@@ -85,10 +100,11 @@ int main()
         {hidden, hidden, hidden, hidden, hidden},
         {hidden, hidden, hidden, hidden, hidden}
     };
+
     createTable(a, trueBoard); // luo "a" määrän pommeja ja käyttää sitä lukua tuol funktios
 
-    while(true)
-    {
+    while(true)                 // main peli loop
+    { 
         cout<<"pelilaudalla on " << a << " miinaa\n";
 
         int i,j;
@@ -104,13 +120,22 @@ int main()
         cout<< "Kerro laatan X kordinaatti jonka haluat avata, 1 - 5" << endl;
         int clearx,cleary;
         cin>>cleary;
+
         cout<< "Kerro laatan Y kordinaatti jonka haluat avata, 1 - 5" << endl;
         cin>>clearx;
         if(clearx >= 6 || cleary >= 6 || clearx <= 0 || cleary <= 0)
             return 2;
+
         clearx--;
         cleary--;
+        
         clearSpace(clearx,cleary,trueBoard,hiddenBoard);
+
+
+        // double multiplier =  // hankkii multiplierin, ottaa pommien määrän "b" ja turvallisten määrän "c"
+        cout << "Vetokerroin on "<< getMulti(b,c)<< "x " << endl;
+        c--; // vähentää valikoimasta yhen, piti laittaa c'n definaus alkuu jostai vitun syyst
+        
 
         if(trueBoard[clearx][cleary] == bombLocation)
         {
@@ -126,6 +151,7 @@ int main()
             }
             break;
         }
+        
     }
 
     sleep(5);
